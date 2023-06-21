@@ -1,4 +1,5 @@
 ;;;; package.lisp
 
 (defpackage #:pastentoot
-  (:use #:cl))
+  (:use #:cl)
+  (:export #:start #:stop))
