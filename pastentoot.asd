@@ -4,6 +4,7 @@
   :author "Shmill"
   :version "0.0.1"
   :serial t
-  :depends-on (#:hunchentoot)
+  :depends-on (#:hunchentoot
+               #:spinneret)
   :components ((:file "package")
                (:file "pastentoot")))
