@@ -1,4 +1,2 @@
 # pastentoot
-### _Shmill_
-
-This is a toy project to get used to common lisp libraries like hunchentoot
+A simple site based on pastebin. Just a toy project to learn Hunchentoot and some other Common Lisp libraries.
