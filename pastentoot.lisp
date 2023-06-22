@@ -5,9 +5,12 @@
 (defvar *acceptor* (make-instance 'hunchentoot:easy-acceptor))
 
 (defun start ()
+  (mito:connect-toplevel :sqlite3 :database-name #P"paste.db")
+  (mito:ensure-table-exists 'paste)
   (hunchentoot:start *acceptor*))
 
 (defun stop ()
+  (mito:disconnect-toplevel)
   (hunchentoot:stop *acceptor*))
 
 (defmacro site-template (body)
@@ -30,6 +33,23 @@
     (:br)
     (:input :type "submit"))))
 
+(hunchentoot:define-easy-handler (view :uri "/view") (code)
+  (let ((paste (mito:find-dao 'paste :code code)))
+    (setf (hunchentoot:content-type*) "text/plain")
+    (paste-content paste)))
+
 (hunchentoot:define-easy-handler (new :uri "/new") ((paste :request-type :post))
-  (setf (hunchentoot:content-type*) "text/plain")
-  (format nil "~a" paste))
+  (let ((code (generate-code)))
+    (mito:create-dao 'paste :content paste :code code)
+    (format nil "~a" code)))
+
+(defun generate-code ()
+  (let ((result (make-string 8)))
+    (loop :for i :from 0 :to 7
+          :for char = (code-char (+ 97 (random 26)))
+          :do (setf (elt result i) char))
+    result))
+
+(mito:deftable paste ()
+  ((code :col-type :text)
+   (content :col-type :text)))
